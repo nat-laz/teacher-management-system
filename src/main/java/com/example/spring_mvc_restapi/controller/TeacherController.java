@@ -2,9 +2,12 @@ package com.example.spring_mvc_restapi.controller;
 
 import com.example.spring_mvc_restapi.model.Teacher;
 import com.example.spring_mvc_restapi.service.TeacherService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -44,9 +47,18 @@ public class TeacherController {
         return "teachers/teacher-form";
     }
 
+
     @PostMapping("/saveTeacher")
-    public String saveTeacher(@ModelAttribute("teacher") Teacher teacher){
+    public String saveTeacher(@Valid @ModelAttribute("teacher") Teacher teacher,
+                              BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            return "teachers/teacher-form";
+        }
+
         teacherService.save(teacher);
+        redirectAttributes.addFlashAttribute("message", "Teacher saved successfully!");
         return "redirect:/teachers/get";
     }
 

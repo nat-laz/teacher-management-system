@@ -1,6 +1,7 @@
 package com.example.spring_mvc_restapi.service;
 
 import com.example.spring_mvc_restapi.dao.TeacherRepository;
+import com.example.spring_mvc_restapi.exceptions.TeacherNotFoundException;
 import com.example.spring_mvc_restapi.model.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,15 +26,8 @@ public class TeacherService implements TeacherServiceInterface {
 
     @Override
     public Teacher findById(int id) {
-        Optional<Teacher> result = teacherRepository.findById(id);
-        Teacher teacher = null;
-
-        if (result.isPresent()) {
-            teacher = result.get();
-        } else {
-            throw new RuntimeException("teacher with id " + id + "not found");
-        }
-        return teacher;
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new TeacherNotFoundException("Teacher with ID " + id + " not found"));
     }
 
     @Override
